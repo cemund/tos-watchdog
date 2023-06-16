@@ -1,4 +1,55 @@
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-  }
+body{
+  width: 460px;
+  height: 150px;
+  background-color: #FFFFFF;
+  display: table;
+  padding: 10px;
+}
+
+table{
+  width: 100%;
+}
+
+button#highlightButton {
+    padding: 10px 10px;
+    width: 100%;
+    background-color: #3B8B6A;
+    border: none;
+    border-radius: 10px;
+
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 350;    
+    font-family: 'Gotham Rounded', sans-serif;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+
+    filter: drop-shadow(3px 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+td#imgCont{
+  padding: 0px 0px 0px 5px;
+  width: 40%;
+  vertical-align: middle;
+  text-align: middle;
+}
+
+img#logo{
+  filter: drop-shadow(5px 4px 4px rgba(0, 0, 0, 0.35));
+}
+
+td#title{
+  font-family: 'Gotham Rounded', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 30px;
+}
+
+td#desc{
+  font-family: 'Gotham Rounded', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 15px;
+}

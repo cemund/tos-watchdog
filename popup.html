@@ -2,9 +2,30 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="popup.css" />
+    <link href="https://fonts.cdnfonts.com/css/gotham-rounded" rel="stylesheet">
   </head>
   <body>
-    <button id="highlightButton">Scan</button>
-    <script src="popup.js"></script>
+    <table id="container">
+      <tr>
+        <td id="imgCont" rowspan="4"><img id="logo" src="/images/logo_v2.png" alt="logo_v2"></td>       
+      </tr>
+
+      <tr>
+        <td id="title">TOSWatchDog</td>
+      </tr>
+
+      <tr>
+        <td id="desc">Detect Terms of Services' Unfair Clauses</td>
+      </tr>
+        
+      <tr>
+        <td id="butScan">
+          <button id="highlightButton">DETECT</button>
+          <script src="popup.js"></script>
+        </td>
+      </tr>
+
+    </table>
+    
   </body>
 </html>

@@ -14,58 +14,71 @@ document
         tabs[0].id,
         { sentences: sentencesToHighlight },
         function (response) {
+          
           console.log("Highlighting complete!");
+          
+          var detector = document.getElementById("scan");
+          detector.setAttribute("hidden", "true");
+          var navi = document.getElementById("navi");
+          navi.removeAttribute("hidden");
+
+          document.getElementById("close").addEventListener("click", function(){
+            var navi = document.getElementById("navi");
+            navi.setAttribute("hidden", "true");
+            var detector = document.getElementById("scan");
+            detector.removeAttribute("hidden");
+          });
 
           // add number to navigate
-          const para = document.createElement("p");
-          para.setAttribute("id", "numberNavigate");
-          para.innerHTML =
-            "<span id='current-pos'>1</span> / <span id='total-pos'>" +
-            sentencesToHighlight.length +
-            "</span>";
-          document.body.appendChild(para);
+          // const para = document.createElement("p");
+          // para.setAttribute("id", "numberNavigate");
+          // para.innerHTML =
+          //   "<span id='current-pos'>1</span> / <span id='total-pos'>" +
+          //   sentencesToHighlight.length +
+          //   "</span>";
+          // document.body.appendChild(para);
 
           // add button to navigate
-          const btn_nav = document.createElement("button");
-          btn_nav.setAttribute("id", "highlightNavigate");
-          btn_nav.innerText = "Navigate";
-          document.body.appendChild(btn_nav);
+          // const btn_nav = document.createElement("button");
+          // btn_nav.setAttribute("id", "highlightNavigate");
+          // btn_nav.innerText = "Navigate";
+          // document.body.appendChild(btn_nav);
 
-          document
-            .getElementById("highlightNavigate")
-            .addEventListener("click", function () {
-              var indexToNavigate = parseInt(
-                document.getElementById("current-pos").innerText
-              );
+          // document
+          //   .getElementById("highlightNavigate")
+          //   .addEventListener("click", function () {
+          //     var indexToNavigate = parseInt(
+          //       document.getElementById("current-pos").innerText
+          //     );
 
-              var totalPos = parseInt(
-                document.getElementById("total-pos").innerText
-              );
+          //     var totalPos = parseInt(
+          //       document.getElementById("total-pos").innerText
+          //     );
 
-              if (indexToNavigate == totalPos) {
-                indexToNavigate = 1;
-              } else {
-                indexToNavigate += 1;
-              }
+          //     if (indexToNavigate == totalPos) {
+          //       indexToNavigate = 1;
+          //     } else {
+          //       indexToNavigate += 1;
+          //     }
 
-              var idToNavigate = "highlight-" + indexToNavigate;
-              console.log(idToNavigate);
-              chrome.tabs.query(
-                { active: true, currentWindow: true },
-                function (tabs) {
-                  console.log(idToNavigate);
-                  chrome.tabs.sendMessage(
-                    tabs[0].id,
-                    { id: idToNavigate },
-                    function (response) {}
-                  );
-                }
-              );
+          //     var idToNavigate = "highlight-" + indexToNavigate;
+          //     console.log(idToNavigate);
+          //     chrome.tabs.query(
+          //       { active: true, currentWindow: true },
+          //       function (tabs) {
+          //         console.log(idToNavigate);
+          //         chrome.tabs.sendMessage(
+          //           tabs[0].id,
+          //           { id: idToNavigate },
+          //           function (response) {}
+          //         );
+          //       }
+          //     );
 
-              document.getElementById("current-pos").innerText =
-                indexToNavigate;
-            });
-          document.getElementById("highlightButton").remove();
+          //     document.getElementById("current-pos").innerText =
+          //       indexToNavigate;
+          //   });
+
         }
       );
     });

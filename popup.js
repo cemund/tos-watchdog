@@ -2,10 +2,9 @@ document
   .getElementById("highlightButton")
   .addEventListener("click", function () {
     // add prediction model here that returns the unfair sentences in a list
-    var sentencesToHighlight = [
-      "important to establish what you can expect",
-      "As a result, these Terms of Service help define",
-      "To the extent that applicable local law prevents certain disputes from being resolved in a California court",
+    let sentencesToHighlight = [
+      "We know it's tempting to skip these Terms of Service, but it's important to establish what you can expect from us as you use Google services, and what we expect from you.",
+      "As a result, these Terms of Service help define Google's relationship with you as you interact with our services.",
     ];
     alert("Scanning for unfair clauses.");
 

@@ -8,7 +8,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var countSearch = 1;
 
     sentences.forEach(function (sentence) {
-      // alert(sentence);
       search(sentence, countSearch);
       countSearch += 1;
       // alert(countSearch);
@@ -26,7 +25,77 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   }
 
-  sendResponse({ success: true });
+  var arrays = []
+  if (request.clicked) {
+    var all = document.getElementsByTagName("*");
+    for (var i=0, max=all.length; i < max; i++) {
+        //all[i].style.backgroundColor  = 'black';
+        //all[i].style.color  = 'red';
+        arrays.push(all[i].innerText);
+    }
+
+    // remove unnecessary elements
+    for (var i = arrays.length - 1; i >= 0; i--) {
+      if (arrays[i] == null || arrays[i] === ""  || arrays[i].includes('\n') || arrays[i].split(' ').length < 5) { // arrays[i].includes('\n') ||
+      arrays.splice(i, 1);
+      }
+      //else {
+      //  arrays[i] = arrays[i].replace(/\n/g, ' ')
+      //}
+    }
+    // remove redundant elements
+    function removeDuplicates(arr) { return arr.filter((item, index) => arr.indexOf(item) === index); }
+    removeDuplicates(arrays);
+
+    /*
+    var counter = 0
+    for (var i=0, max=all.length; i < max; i++) {
+      //all[i].style.backgroundColor  = 'black';
+      //all[i].style.color  = 'red';
+      //arrays.push(all[i].innerText);
+      if (all[i].innerText.localeCompare(arrays[counter])){
+        counter = counter + 1;
+        all[i].style.backgroundColor  = 'black';
+        all[i].style.color  = 'red';
+      }
+    }
+    */
+
+    /*
+    var counter = 0;
+    var testArrays = arrays;
+    for (var i=0, max=all.length; i < max; i++) {
+      //all[i].style.backgroundColor  = 'black';
+      //all[i].style.color  = 'red';
+      //arrays.push(all[i].innerText);
+    //  if (all[i].innerText.localeCompare(testArrays[counter])){
+      //  counter = counter + 1;
+      //  all[i].style.backgroundColor  = 'black';
+      //  all[i].style.color  = 'red';
+    //  }
+    }
+    */
+  }
+  
+  
+  if (request.indexOfUnfairClause) {
+    var all = document.getElementsByTagName("*");
+    var indexOfUnfairClause = request.indexOfUnfairClause;
+    var counter = 0;
+    var array = request.array;
+    for (var i=0, max=all.length; i < max; i++) {
+        //all[i].style.backgroundColor  = 'black';
+        //all[i].style.color  = 'red';
+        //arrays.push(all[i].innerText);
+        if (all[i].innerText === (array[indexOfUnfairClause[counter]])) {
+          counter = counter + 1;
+          all[i].style.color  = 'red'
+          //all[i].style.backgroundColor  = 'black'
+        }
+    }
+  }
+  
+  sendResponse({ success: true, extractedSentences: arrays});
 });
 
 // highlights search list
@@ -42,28 +111,4 @@ function search(text, count) {
       "</span>"
   );
   document.body.innerHTML = highlightedText;
-}
-
-// const article = document.querySelector("article");
-const article = document.getElementById("blog-in-article");
-
-// `document.querySelector` may return null if the selector doesn't match anything.
-if (article) {
-  const text = article.textContent;
-  const wordMatchRegExp = /[^\s]+/g; // Regular expression
-  const words = text.matchAll(wordMatchRegExp);
-  // matchAll returns an iterator, convert to array to get word count
-  const wordCount = [...words].length;
-  const readingTime = Math.round(wordCount / 200);
-  const badge = document.createElement("p");
-  // Use the same styling as the publish information in an article's header
-  badge.classList.add("color-secondary-text", "type--caption");
-  badge.textContent = `⏱️ ${readingTime} min read`;
-
-  // Support for API reference docs
-  const heading = article.querySelector("h2");
-  // Support for article docs with date
-  const date = article.querySelector("time")?.parentNode;
-
-  (date ?? heading).insertAdjacentElement("afterend", badge);
 }

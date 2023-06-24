@@ -17,11 +17,12 @@ def scrape(website):
     #html = driver.page_source
     element = driver.find_element(By.TAG_NAME, "Body")
     
-    replacedApostrophe = (element.text).replace('’', '\'')
+    #replacedApostrophe = (element.text).replace('’', '\'')
     #print(element.text)
-    splitElement = (replacedApostrophe).split('\n')
+    splitElement = (element.text).split('\n')
     print(splitElement)
     #return element.text
+    
     return splitElement
 
 #tos = scrape("https://policies.google.com/terms?hl=en-US")

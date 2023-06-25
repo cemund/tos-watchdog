@@ -83,3 +83,11 @@ document
       );
     });
   });
+
+// INFORMATION POP UP
+$(document).ready(function(){
+  $('#descPop').popover({
+    placement: "left",
+    content: "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements. Click 'Detect' to start."
+  });
+});

@@ -4,6 +4,7 @@ body{
   background-color: #FFFFFF;
   display: table;
   padding: 10px;
+  z-index: 0;
 }
 
 table{

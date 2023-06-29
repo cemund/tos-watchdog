@@ -6,50 +6,14 @@ document
         active: true,
         currentWindow: true,
       });
-      const contentJSResponse = await chrome.tabs.sendMessage(tab.id, {
+      const response = await chrome.tabs.sendMessage(tab.id, {
         clicked: true,
       });
-      // console.log(contentJSResponse);
-
-      // $.ajax({
-      //   url: "http://127.0.0.1:5000/identifyUnfair",
-      //   type: "POST",
-      //   data: { info: JSON.stringify(contentJSResponse.extractedSentences) },
-      //   success: function (response) {
-      //     var sentencesToHighlight = response.sentences;
-      //     console.log(sentencesToHighlight);
-
-      //     (async () => {
-      //       const [tab] = await chrome.tabs.query({
-      //         active: true,
-      //         currentWindow: true,
-      //       });
-      //       const newJSResponse = await chrome.tabs.sendMessage(tab.id, {
-      //         array: contentJSResponse.extractedSentences,
-      //         indexOfUnfairClause: sentencesToHighlight,
-      //       });
-      //       console.log(newJSResponse);
-      //     })();
-      //   },
-      // });
     })();
   });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.sentence) {
-    // console.log(request.sentence);
-    // $.ajax({
-    //   url: "http://127.0.0.1:5000/identifyUnfair",
-    //   type: "POST",
-    //   data: { sentence: JSON.stringify(request.sentence) },
-    //   success: function (response) {
-    //     // var sentencesToHighlight = response.sentences;
-    //     // console.log(sentencesToHighlight);
-    //   },
-    // });
-
-    // const processedData = await performAsyncOperation(stringData);
-
     fetch("http://127.0.0.1:5000/identifyUnfair", {
       method: "POST",
       headers: {
@@ -72,22 +36,57 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     // Return true to indicate that the response will be sent asynchronously
     return true;
   }
-  // const stringData = request.stringData;
 
-  // fetch("http://your-flask-server-endpoint", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({ stringData: stringData }),
-  // })
-  //   .then((response) => response.json())
-  //   .then((responseData) => {
-  //     // Handle the response from Flask
-  //     console.log(responseData);
-  //   })
-  //   .catch((error) => {
-  //     // Handle any errors
-  //     console.error("Error:", error);
-  //   });
+  // if all predictions is done
+  if (request.count) {
+    // handle request when done
+    console.log("done");
+    // add number to navigate
+    const para = document.createElement("p");
+    para.setAttribute("id", "numberNavigate");
+    para.innerHTML =
+      "<span id='current-pos'>1</span> / <span id='total-pos'>" +
+      request.count +
+      "</span>";
+    document.body.appendChild(para);
+
+    // add button to navigate
+    const btn_nav = document.createElement("button");
+    btn_nav.setAttribute("id", "highlightNavigate");
+    btn_nav.innerText = "Navigate";
+    document.body.appendChild(btn_nav);
+
+    document
+      .getElementById("highlightNavigate")
+      .addEventListener("click", function () {
+        var indexToNavigate = parseInt(
+          document.getElementById("current-pos").innerText
+        );
+
+        var totalPos = parseInt(document.getElementById("total-pos").innerText);
+
+        if (indexToNavigate == totalPos) {
+          indexToNavigate = 1;
+        } else {
+          indexToNavigate += 1;
+        }
+
+        // var idToNavigate = "highlight-" + indexToNavigate;
+        // console.log(idToNavigate);
+        chrome.tabs.query(
+          { active: true, currentWindow: true },
+          function (tabs) {
+            console.log(indexToNavigate);
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              { index_to_nav: indexToNavigate },
+              function (response) {}
+            );
+          }
+        );
+
+        document.getElementById("current-pos").innerText = indexToNavigate;
+      });
+    document.getElementById("highlightButton").remove();
+  }
 });

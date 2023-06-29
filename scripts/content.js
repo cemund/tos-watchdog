@@ -1,3 +1,6 @@
+var initial_body_innerHTML = document.body.innerHTML;
+var unfair_count = 0;
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // alert(request.sentences);
 
@@ -15,18 +18,24 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 
   // if navigate button is pressed
-  if (request.id) {
-    var id = request.id; // Store the array of element IDs in a variable
-    var targetElement = document.getElementById(id); // Get the first element from the array
-    var topOffset = targetElement.getBoundingClientRect().top; // Calculate the top offset of the element relative to the viewport
-    window.scrollTo({
-      top: window.scrollY + topOffset - 200, // Adjust the scroll position by subtracting 200 pixels from the current scroll position plus the top offset
-      behavior: "smooth", // Scroll smoothly to the adjusted position
-    });
+  if (request.index_to_nav) {
+    console.log("hello");
+    // var id = request.id; // Store the array of element IDs in a variable
+    // var targetElement = document.getElementById(id); // Get the first element from the array
+    // var topOffset = targetElement.getBoundingClientRect().top; // Calculate the top offset of the element relative to the viewport
+    // window.scrollTo({
+    //   top: window.scrollY + topOffset - 200, // Adjust the scroll position by subtracting 200 pixels from the current scroll position plus the top offset
+    //   behavior: "smooth", // Scroll smoothly to the adjusted position
+    // });
   }
 
-  var arrays = [];
   if (request.clicked) {
+    document.body.innerHTML = initial_body_innerHTML;
+
+    unfair_count = 0;
+
+    var arrays = [];
+    var sentencesPromises = [];
     var all = document.getElementsByTagName("*");
     for (var i = 0, max = all.length; i < max; i++) {
       //all[i].style.backgroundColor  = 'black';
@@ -55,101 +64,43 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           .map((sentence) => sentence.trim())
           .filter((sentence) => sentence !== "");
 
-        // console.log(sentences);
-        // sentences.map((element) => {
-        //   // Do something with the element
-        //   chrome.runtime.sendMessage(
-        //     { sentence: element },
-        //     function (response) {
-        //       console.log("request suceeded");
-        //     }
-        //   );
+        sentencesPromises.push(predictSentences(sentences, all[i]));
 
-        //   console.log(element);
-        // });
-
-        predictSentences(sentences, all[i])
-          .then(() => {
-            console.log("All sentences processed");
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+        // predictSentences(sentences, all[i])
+        //   .then(() => {
+        //     console.log("All sentences processed");
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error:", error);
+        //   });
 
         // console.log("hello");
       }
       arrays.push(inner_text_of_tag);
     }
-
-    // remove unnecessary elements
-    for (var i = arrays.length - 1; i >= 0; i--) {
-      if (
-        arrays[i] == null ||
-        arrays[i] === "" ||
-        arrays[i].includes("\n") ||
-        arrays[i].split(" ").length < 5
-      ) {
-        // arrays[i].includes('\n') ||
-        arrays.splice(i, 1);
-      }
-      //else {
-      //  arrays[i] = arrays[i].replace(/\n/g, ' ')
-      //}
-    }
-    // remove redundant elements
-    function removeDuplicates(arr) {
-      return arr.filter((item, index) => arr.indexOf(item) === index);
-    }
-    removeDuplicates(arrays);
-
-    /*
-    var counter = 0
-    for (var i=0, max=all.length; i < max; i++) {
-      //all[i].style.backgroundColor  = 'black';
-      //all[i].style.color  = 'red';
-      //arrays.push(all[i].innerText);
-      if (all[i].innerText.localeCompare(arrays[counter])){
-        counter = counter + 1;
-        all[i].style.backgroundColor  = 'black';
-        all[i].style.color  = 'red';
-      }
-    }
-    */
-
-    /*
-    var counter = 0;
-    var testArrays = arrays;
-    for (var i=0, max=all.length; i < max; i++) {
-      //all[i].style.backgroundColor  = 'black';
-      //all[i].style.color  = 'red';
-      //arrays.push(all[i].innerText);
-    //  if (all[i].innerText.localeCompare(testArrays[counter])){
-      //  counter = counter + 1;
-      //  all[i].style.backgroundColor  = 'black';
-      //  all[i].style.color  = 'red';
-    //  }
-    }
-    */
+    // Wait for all the promises to resolve using Promise.all
+    Promise.all(sentencesPromises)
+      .then(() => {
+        console.log("All sentences processed");
+        console.log(unfair_count);
+        sendResponse({ success: true, count: unfair_count });
+        // send message if done in background script
+        try {
+          const response = sendMessageToBackgroundScript({
+            count: unfair_count,
+          });
+          console.log("Request succeeded:", response);
+        } catch (error) {
+          // console.error("Request failed:", error);
+        }
+      })
+      .catch((error) => {
+        // console.error("Error:", error);
+      });
+    // console.log(unfair_count);
+    // sendResponse({ success: true, count: unfair_count });
+    sendResponse({ success: true });
   }
-
-  if (request.indexOfUnfairClause) {
-    var all = document.getElementsByTagName("*");
-    var indexOfUnfairClause = request.indexOfUnfairClause;
-    var counter = 0;
-    var array = request.array;
-    for (var i = 0, max = all.length; i < max; i++) {
-      //all[i].style.backgroundColor  = 'black';
-      //all[i].style.color  = 'red';
-      //arrays.push(all[i].innerText);
-      if (all[i].innerText === array[indexOfUnfairClause[counter]]) {
-        counter = counter + 1;
-        all[i].style.color = "red";
-        //all[i].style.backgroundColor  = 'black'
-      }
-    }
-  }
-
-  sendResponse({ success: true, extractedSentences: arrays });
 });
 
 // highlights search list
@@ -176,9 +127,10 @@ async function predictSentences(sentences, tag) {
       console.log("Request succeeded:", response);
       // Handle the response here
       if (response.pred == 1) {
+        unfair_count = unfair_count + 1;
         tag.innerHTML = tag.innerText.replace(
           element,
-          "<span style='background-color: red; color: white; font-size: 40px; font-weight: bold;text-transform:uppercase;padding:0px 10px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
+          "<span class='unfair' style='background-color: red; color: white; font-size: 120%; font-weight: bold;text-transform:uppercase;padding:0px 5px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
             element +
             "</span>"
         );

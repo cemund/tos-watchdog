@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Reading time",
+  "name": "TOSWatchDog",
   "version": "1.0",
-  "description": "Add the reading time to Chrome Extension documentation araticles",
+  "description": "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements.",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -15,8 +15,6 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "permissions": [
-    "tabs"
-  ],
+  "permissions": ["tabs"],
   "action": { "default_popup": "popup.html" }
 }

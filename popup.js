@@ -1,3 +1,11 @@
+// initialization for tooltip
+const tooltipTriggerList = document.querySelectorAll(
+  '[data-bs-toggle="tooltip"]'
+);
+const tooltipList = [...tooltipTriggerList].map(
+  (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+);
+
 document
   .getElementById("highlightButton")
   .addEventListener("click", function () {
@@ -13,13 +21,13 @@ document
   });
 
 // INFORMATION POP UP
-$(document).ready(function () {
-  $("#descPop").popover({
-    placement: "left",
-    content:
-      "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements. Click 'Detect' to start.",
-  });
-});
+// $(document).ready(function () {
+//   $("#descPop").popover({
+//     placement: "left",
+//     content:
+//       "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements. Click 'Detect' to start.",
+//   });
+// });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.sentence) {
@@ -48,36 +56,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   // if all predictions is done
   if (request.count) {
-    // handle request when done
-    // console.log(request.count);
-    // add number to navigate
-    // const para = document.createElement("p");
-    // para.setAttribute("id", "numberNavigate");
-    // para.innerHTML =
-    //   "<span id='current-pos'>1</span> / <span id='total-pos'>" +
-    //   request.count +
-    //   "</span>";
-    // document.body.appendChild(para);
-
-    // // add button to navigate
-    // const btn_nav = document.createElement("button");
-    // btn_nav.setAttribute("id", "highlightNavigate");
-    // btn_nav.innerText = "Navigate";
-    // document.body.appendChild(btn_nav);
-
     document.getElementById("total-pos").innerText = request.count;
 
-    var detector = document.getElementById("scan");
-    detector.setAttribute("hidden", "true");
-    var navi = document.getElementById("navi");
-    navi.removeAttribute("hidden");
+    // var detector = document.getElementById("scan");
+    // detector.setAttribute("hidden", "true");
+    // var navi = document.getElementById("navi");
+    // navi.removeAttribute("hidden");
 
-    document.getElementById("close").addEventListener("click", function () {
-      var navi = document.getElementById("navi");
-      navi.setAttribute("hidden", "true");
-      var detector = document.getElementById("scan");
-      detector.removeAttribute("hidden");
-    });
+    // document.getElementById("close").addEventListener("click", function () {
+    //   var navi = document.getElementById("navi");
+    //   navi.setAttribute("hidden", "true");
+    //   var detector = document.getElementById("scan");
+    //   detector.removeAttribute("hidden");
+    // });
 
     // add eventlistener for right button
     document.getElementById("right").addEventListener("click", function () {
@@ -109,6 +100,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     // add eventlistener for left button
     document.getElementById("left").addEventListener("click", function () {
+      console.log("hello");
       var indexToNavigate = parseInt(
         document.getElementById("current-pos").innerText
       );
@@ -134,7 +126,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       document.getElementById("current-pos").innerText = indexToNavigate;
     });
-
-    document.getElementById("highlightButton").remove();
+    // display none if to navigate
+    document.getElementById("detecting-UI").classList.add("visually-hidden");
+    document
+      .getElementById("navigation-UI")
+      .classList.remove("visually-hidden");
   }
 });

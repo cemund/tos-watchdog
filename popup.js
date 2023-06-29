@@ -11,7 +11,13 @@ document
       });
     })();
   });
-
+  // INFORMATION POP UP
+$(document).ready(function(){
+  $('#descPop').popover({
+    placement: "left",
+    content: "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements. Click 'Detect' to start."
+  });
+});
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.sentence) {
     fetch("http://127.0.0.1:5000/identifyUnfair", {
@@ -55,6 +61,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     btn_nav.setAttribute("id", "highlightNavigate");
     btn_nav.innerText = "Navigate";
     document.body.appendChild(btn_nav);
+    
+//     var detector = document.getElementById("scan");
+//           detector.setAttribute("hidden", "true");
+//           var navi = document.getElementById("navi");
+//           navi.removeAttribute("hidden");
+
+//           document.getElementById("close").addEventListener("click", function(){
+//             var navi = document.getElementById("navi");
+//             navi.setAttribute("hidden", "true");
+//             var detector = document.getElementById("scan");
+//             detector.removeAttribute("hidden");
+//           });
 
     document
       .getElementById("highlightNavigate")
@@ -90,3 +108,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     document.getElementById("highlightButton").remove();
   }
 });
+

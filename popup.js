@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // if all predictions is done
   if (request.count) {
     // handle request when done
-    console.log("done");
+    console.log(request.count);
     // add number to navigate
     const para = document.createElement("p");
     para.setAttribute("id", "numberNavigate");

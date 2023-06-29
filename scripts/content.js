@@ -19,14 +19,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   // if navigate button is pressed
   if (request.index_to_nav) {
-    console.log("hello");
+    console.log(request.index_to_nav);
+    const targetElement =
+      document.querySelectorAll(".unfair")[request.index_to_nav];
+
     // var id = request.id; // Store the array of element IDs in a variable
     // var targetElement = document.getElementById(id); // Get the first element from the array
-    // var topOffset = targetElement.getBoundingClientRect().top; // Calculate the top offset of the element relative to the viewport
-    // window.scrollTo({
-    //   top: window.scrollY + topOffset - 200, // Adjust the scroll position by subtracting 200 pixels from the current scroll position plus the top offset
-    //   behavior: "smooth", // Scroll smoothly to the adjusted position
-    // });
+    var topOffset = targetElement.getBoundingClientRect().top; // Calculate the top offset of the element relative to the viewport
+    window.scrollTo({
+      top: window.scrollY + topOffset - 200, // Adjust the scroll position by subtracting 200 pixels from the current scroll position plus the top offset
+      behavior: "smooth", // Scroll smoothly to the adjusted position
+    });
   }
 
   if (request.clicked) {
@@ -83,6 +86,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       .then(() => {
         console.log("All sentences processed");
         console.log(unfair_count);
+        console.log(document.querySelectorAll(".unfair").length);
+
+        unfair_count = document.querySelectorAll(".unfair").length;
+
         sendResponse({ success: true, count: unfair_count });
         // send message if done in background script
         try {
@@ -104,36 +111,85 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 // highlights search list
-function search(text, count) {
-  var bodyText = document.body.innerHTML;
-  var searchTerm = text;
-  var highlightedText = bodyText.replace(
-    searchTerm,
-    "<span id='highlight-" +
-      count +
-      "'style='background-color: red; color: white; font-size: 50px; font-weight: bold;text-transform:uppercase;padding:0px 10px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
-      searchTerm +
-      "</span>"
-  );
-  document.body.innerHTML = highlightedText;
-}
+// function search(text, count) {
+//   var bodyText = document.body.innerHTML;
+//   var searchTerm = text;
+//   var highlightedText = bodyText.replace(
+//     searchTerm,
+//     "<span id='highlight-" +
+//       count +
+//       "'style='background-color: red; color: white; font-size: 50px; font-weight: bold;text-transform:uppercase;padding:0px 10px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
+//       searchTerm +
+//       "</span>"
+//   );
+//   document.body.innerHTML = highlightedText;
+// }
 
 async function predictSentences(sentences, tag) {
-  for (const element of sentences) {
+  // console.log(tag.innerHTML);
+
+  // const sentences_tmp = tag.innerHTML.split(". ");
+  // add span tag to each sentence of sentences
+
+  // tag.
+
+  let x = 0;
+  // let y = [];
+
+  for (let i = 0; i < sentences.length; i++) {
+    if (sentences[i].split(" ").length < 5) {
+      continue;
+    }
+
+    const element = sentences[i];
     try {
       const response = await sendMessageToBackgroundScript({
         sentence: element,
       });
-      console.log("Request succeeded:", response);
+      // console.log("Request succeeded:", response);
       // Handle the response here
       if (response.pred == 1) {
-        unfair_count = unfair_count + 1;
-        tag.innerHTML = tag.innerText.replace(
-          element,
+        if (x == 0) {
+          // get all outerHTML of <a> tags in the sentences
+          // y = tag.getElementsByTagName("a");
+
+          const modifiedContent = sentences
+            .map((sentence) => {
+              return "<span>" + sentence + "</span>";
+            })
+            .join(". ");
+
+          tag.innerHTML = modifiedContent;
+          x = x + 1;
+        }
+        const allSpan = tag.getElementsByTagName("span");
+
+        allSpan[i].outerHTML =
           "<span class='unfair' style='background-color: red; color: white; font-size: 120%; font-weight: bold;text-transform:uppercase;padding:0px 5px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
-            element +
-            "</span>"
-        );
+          allSpan[i].innerText +
+          "</span>";
+        // allSpan[i].className = "unfair";
+        // allSpan[i].style.color = "white";
+        // allSpan[i].style.fontSize = "120%";
+
+        // loop that return the <a> tags
+        // for (let k = 0; k < y.length; k++) {
+        //   if (allSpan[i].innerText.includes(y[i].innerText)) {
+        //     allSpan[i].innerHTML = allSpan[i].innerHTML.replace(
+        //       y[i].innerText,
+        //       y[i].outerHTML
+        //     );
+        //   }
+        // }
+
+        unfair_count = unfair_count + 1;
+        console.log(unfair_count + ": " + element);
+        // tag.innerHTML = tag.innerText.replace(
+        //   element,
+        //   "<span class='unfair' style='background-color: red; color: white; font-size: 120%; font-weight: bold;text-transform:uppercase;padding:0px 5px;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;'>" +
+        //     element +
+        //     "</span>"
+        // );
       }
     } catch (error) {
       // console.error("Request failed:", error);

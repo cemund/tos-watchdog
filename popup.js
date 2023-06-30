@@ -10,6 +10,15 @@ const tooltipList = [...tooltipTriggerList].map(
 document
   .getElementById("highlightButton")
   .addEventListener("click", function () {
+    // hide content of button and replace with loading animation
+    document
+      .getElementById("before-detect-content")
+      .classList.add("visually-hidden");
+    document
+      .getElementById("after-detect-content")
+      .classList.remove("visually-hidden");
+
+    // send message to content script to detect unfair clauses
     (async () => {
       const [tab] = await chrome.tabs.query({
         active: true,
@@ -26,7 +35,13 @@ document.getElementById("exit").addEventListener("click", function () {
   document.getElementById("current-pos").innerText = "1";
   document.getElementById("total-pos").innerText = "1";
 
-  // revert to detecting UI display
+  // revert to first detecting UI display
+  document
+    .getElementById("before-detect-content")
+    .classList.remove("visually-hidden");
+  document
+    .getElementById("after-detect-content")
+    .classList.add("visually-hidden");
   document.getElementById("detecting-UI").classList.remove("visually-hidden");
   document.getElementById("navigation-UI").classList.add("visually-hidden");
 

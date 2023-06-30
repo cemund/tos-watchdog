@@ -6,6 +6,7 @@ const tooltipList = [...tooltipTriggerList].map(
   (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
 );
 
+// add event listener to the "detect button"
 document
   .getElementById("highlightButton")
   .addEventListener("click", function () {
@@ -15,20 +16,78 @@ document
         currentWindow: true,
       });
       const response = await chrome.tabs.sendMessage(tab.id, {
-        clicked: true,
+        detect: true,
       });
     })();
   });
 
-// INFORMATION POP UP
-// $(document).ready(function () {
-//   $("#descPop").popover({
-//     placement: "left",
-//     content:
-//       "A Chrome extension that helps users identify unfair or problematic clauses in website terms of service agreements. Click 'Detect' to start.",
-//   });
-// });
+// add event listener to the "x button in navigation"
+document.getElementById("exit").addEventListener("click", function () {
+  document.getElementById("current-pos").innerText = "1";
+  document.getElementById("total-pos").innerText = "1";
 
+  // revert to detecting UI display
+  document.getElementById("detecting-UI").classList.remove("visually-hidden");
+  document.getElementById("navigation-UI").classList.add("visually-hidden");
+
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    // console.log(indexToNavigate);
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { isClear: true },
+      function (response) {}
+    );
+  });
+});
+
+// add eventlistener for right button
+document.getElementById("right").addEventListener("click", function () {
+  var indexToNavigate = parseInt(
+    document.getElementById("current-pos").innerText
+  );
+
+  var totalPos = parseInt(document.getElementById("total-pos").innerText);
+
+  if (indexToNavigate == totalPos) {
+    indexToNavigate = 1;
+  } else {
+    indexToNavigate += 1;
+  }
+
+  sendMessageToNavigate(indexToNavigate);
+});
+
+// add eventlistener for left button
+document.getElementById("left").addEventListener("click", function () {
+  let indexToNavigate = parseInt(
+    document.getElementById("current-pos").innerText
+  );
+
+  let totalPos = parseInt(document.getElementById("total-pos").innerText);
+
+  if (indexToNavigate == 1) {
+    indexToNavigate = totalPos;
+  } else {
+    indexToNavigate -= 1;
+  }
+
+  sendMessageToNavigate(indexToNavigate);
+});
+
+function sendMessageToNavigate(indexToNavigate) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    console.log(indexToNavigate);
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { index_to_nav: indexToNavigate },
+      function (response) {}
+    );
+  });
+
+  document.getElementById("current-pos").innerText = indexToNavigate;
+}
+
+// add listener for content script
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.sentence) {
     fetch("http://127.0.0.1:5000/identifyUnfair", {
@@ -58,75 +117,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.count) {
     document.getElementById("total-pos").innerText = request.count;
 
-    // var detector = document.getElementById("scan");
-    // detector.setAttribute("hidden", "true");
-    // var navi = document.getElementById("navi");
-    // navi.removeAttribute("hidden");
-
-    // document.getElementById("close").addEventListener("click", function () {
-    //   var navi = document.getElementById("navi");
-    //   navi.setAttribute("hidden", "true");
-    //   var detector = document.getElementById("scan");
-    //   detector.removeAttribute("hidden");
-    // });
-
-    // add eventlistener for right button
-    document.getElementById("right").addEventListener("click", function () {
-      var indexToNavigate = parseInt(
-        document.getElementById("current-pos").innerText
-      );
-
-      var totalPos = parseInt(document.getElementById("total-pos").innerText);
-
-      if (indexToNavigate == totalPos) {
-        indexToNavigate = 1;
-      } else {
-        indexToNavigate += 1;
-      }
-
-      // var idToNavigate = "highlight-" + indexToNavigate;
-      // console.log(idToNavigate);
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        console.log(indexToNavigate);
-        chrome.tabs.sendMessage(
-          tabs[0].id,
-          { index_to_nav: indexToNavigate },
-          function (response) {}
-        );
-      });
-
-      document.getElementById("current-pos").innerText = indexToNavigate;
-    });
-
-    // add eventlistener for left button
-    document.getElementById("left").addEventListener("click", function () {
-      console.log("hello");
-      var indexToNavigate = parseInt(
-        document.getElementById("current-pos").innerText
-      );
-
-      var totalPos = parseInt(document.getElementById("total-pos").innerText);
-
-      if (indexToNavigate == 1) {
-        indexToNavigate = totalPos;
-      } else {
-        indexToNavigate -= 1;
-      }
-
-      // var idToNavigate = "highlight-" + indexToNavigate;
-      // console.log(idToNavigate);
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        console.log(indexToNavigate);
-        chrome.tabs.sendMessage(
-          tabs[0].id,
-          { index_to_nav: indexToNavigate },
-          function (response) {}
-        );
-      });
-
-      document.getElementById("current-pos").innerText = indexToNavigate;
-    });
-    // display none if to navigate
+    // display navigation UI
     document.getElementById("detecting-UI").classList.add("visually-hidden");
     document
       .getElementById("navigation-UI")

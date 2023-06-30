@@ -4,17 +4,22 @@ var unfair_count = 0;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // alert(request.sentences);
 
-  if (request.sentences) {
-    // alert(request.sentences);
-    var sentences = request.sentences;
+  // if (request.sentences) {
+  //   // alert(request.sentences);
+  //   var sentences = request.sentences;
 
-    var countSearch = 1;
+  //   var countSearch = 1;
 
-    sentences.forEach(function (sentence) {
-      search(sentence, countSearch);
-      countSearch += 1;
-      // alert(countSearch);
-    });
+  //   sentences.forEach(function (sentence) {
+  //     search(sentence, countSearch);
+  //     countSearch += 1;
+  //     // alert(countSearch);
+  //   });
+  // }
+
+  // if x button is pressed
+  if (request.isClear) {
+    document.body.innerHTML = initial_body_innerHTML;
   }
 
   // if navigate button is pressed
@@ -32,7 +37,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   }
 
-  if (request.clicked) {
+  if (request.detect) {
     document.body.innerHTML = initial_body_innerHTML;
 
     unfair_count = 0;

@@ -74,12 +74,17 @@ td#title{
   line-height: 30px;
 }
 
+#title {
+  margin-bottom: 10px;
+}
+
 .title-text {
   font-family: 'Gotham Rounded', sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 30px;
   line-height: 30px;
+  margin-bottom: 0 !important;
 }
 
 .subtitle-text {
@@ -170,7 +175,7 @@ td#close{
 td#close path{
   fill: rgba(0,0,0,.75);
 }
-
+/* 
 .tooltip {
   position: relative;
   display: inline-block;
@@ -191,15 +196,14 @@ td#close path{
   left: 50%;
   margin-left: -60px;
   
-  /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
   opacity: 0;
   transition: opacity 1s;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
-  opacity: 1;
-}
+  opacity: 1; */
+/* } */
 
 .nav-btn:hover {
   background-color:#f0f0f0;
@@ -217,4 +221,23 @@ td#close path{
   cursor: pointer; /* Mouse pointer on hover */
   align-items: center;
   align-content: center;
+}
+
+.btn-detect {
+  /* Since your button is a block button, otherwise use inline-flex */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  /* color:#d3cfcf !important; */
+}
+
+.btn-detect:hover {
+  color: #f0f0f0;
+  .detect-icon {
+    fill:#f0f0f0;
+  }
+}
+
+.detect-icon {
+  margin-right: 10px;
 }

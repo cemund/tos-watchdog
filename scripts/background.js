@@ -46,7 +46,6 @@ document.getElementById("exit").addEventListener("click", function () {
   document.getElementById("navigation-UI").classList.add("visually-hidden");
 
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    // console.log(indexToNavigate);
     chrome.tabs.sendMessage(
       tabs[0].id,
       { isClear: true },
@@ -91,7 +90,6 @@ document.getElementById("left").addEventListener("click", function () {
 
 function sendMessageToNavigate(indexToNavigate) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    console.log(indexToNavigate);
     chrome.tabs.sendMessage(
       tabs[0].id,
       { index_to_nav: indexToNavigate },
@@ -115,13 +113,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       .then((response) => response.json())
       .then((responseData) => {
         // Handle the response from Flask
-        // console.log(responseData);
 
         sendResponse(responseData);
       })
       .catch((error) => {
         // Handle any errors
-        // console.error("Error:", error);
       });
 
     // Return true to indicate that the response will be sent asynchronously

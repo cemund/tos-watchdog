@@ -30,8 +30,6 @@ def identifyUnfairClauses():
 
         # Prediction
         pred = svm.predict(temp_list)[0] # stores 0 or 1 to pred
-        # print(pred)
-        # print(cleaned_sentence)
 
         # creating a response
         response_data = {'message': 'String received successfully', 'pred': int(pred)}

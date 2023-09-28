@@ -44,6 +44,14 @@
 17. **User Feedback**: If you believe a sentence has been misclassified, you can provide feedback within the extension to help us improve.
 
 # Screenshots:
+**System Architecture**:
+
+![Screenshot 2023-09-28 131812](https://github.com/cemund/tos-watchdog/assets/79438610/bca3af20-54d7-4740-b3fe-41069e20fe38)
+
+**Example Usage**:
+
+![image](https://github.com/cemund/tos-watchdog/assets/79438610/c1344884-ab9e-4388-9497-c4206365131f)
+
 
 # Project Impact:
 At TOS Watchdog, we are committed to making the online world a fairer and more transparent place for all users. Our Chrome extension has the potential to make a significant impact in several key areas:

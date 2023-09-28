@@ -3,12 +3,12 @@
 **TOS Watchdog** is a Chrome extension designed to empower users by providing real-time analysis and classification of sentences in online Terms of Service (TOS) agreements. We understand that users often find TOS documents lengthy and filled with complex legal jargon. Our goal is to help users identify potential unfair terms quickly and easily.
 
 # Features
-- **Sentence Classification**: FairTOS uses natural language processing (NLP) techniques to analyze each sentence in a TOS document and classify it into different categories:
+- **Sentence Classification**: TOS Watchdog uses natural language processing (NLP) techniques to analyze each sentence in a TOS document and classify it into different categories:
 
   - **User-Friendly**: Sentences that are fair and user-friendly.
   - **Potentially Unfair**: Sentences that might raise concerns or be disadvantageous to users.
     
-- **Real-Time Analysis**: FairTOS performs this analysis in real-time, so you can see how each sentence is categorized as you read through a TOS document.
+- **Real-Time Analysis**: TOS Watchdog performs this analysis in real-time, so you can see how each sentence is categorized as you read through a TOS document.
 
 - **Color-Coded Highlights**: Sentences are color-coded to provide a quick visual indication of their classification, making it easy to identify potentially unfair terms.
 
